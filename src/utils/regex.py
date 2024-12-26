@@ -4,15 +4,6 @@ from datetime import datetime
 
 
 def format_any_price(any_price_text: str) -> float | None:
-    """Функция для очистки лишних данных и нормализации цены.
-
-    Args:
-        any_price_text (str): Текст с ценой.
-
-    Returns:
-        float: Очищенная и нормализованная цена.
-    """
-
     if not any_price_text:
         return None
 
@@ -28,15 +19,6 @@ def format_any_price(any_price_text: str) -> float | None:
 
 
 def format_discount_info(discount_info_text: str) -> str | None:
-    """Функция для очистки лишних данных от процента скидки.
-
-    Args:
-        discount_info_text (str): Текст с информацией о скидке.
-
-    Returns:
-        str: Процент скидки.
-    """
-
     if not discount_info_text:
         return None
 
@@ -48,15 +30,6 @@ def format_discount_info(discount_info_text: str) -> str | None:
 
 
 def format_offer_date(offer_date_text: str) -> str | None:
-    """Функция для извлечения и форматирования даты и времени в формат ISO 8601.
-
-    Args:
-        offer_text (str): Текст с датой и временем окончания предложения.
-
-    Returns:
-        str: Форматированная дата и время в формате ISO 8601, или None, если не удалось извлечь.
-    """
-
     if not offer_date_text:
         return None
 
@@ -67,7 +40,7 @@ def format_offer_date(offer_date_text: str) -> str | None:
     if match:
         offer_date = match.group()
         formatted_offer_date = datetime.strptime(
-            offer_date, "%m/%d/%Y %I:%M %p"
+            offer_date, "%d/%m/%Y %I:%M %p"
         )
         return formatted_offer_date.isoformat()
 
