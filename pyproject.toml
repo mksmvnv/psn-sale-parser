@@ -3,7 +3,7 @@ target-version = ["py312"]
 line-length = 79
 
 [tool.poetry]
-name = "psn-turkey-sales"
+name = "psn-sale-parser"
 version = "0.1.0"
 description = ""
 authors = ["Maksim <mksmvnv@icloud.com>"]
