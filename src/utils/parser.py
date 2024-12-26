@@ -7,24 +7,43 @@ from utils.regex import (
     format_discount_info,
     format_offer_date,
 )
-
 from config import settings
 
-headers = {"User-Agent": settings.USER_AGENT}
 
-proxies = {"http": settings.PROXIES}
+headers = {"User-Agent": settings.USER_AGENT}
+proxies = {"http": settings.PROXY}
+
+
+def get_total_pages(main_url: str) -> int:
+    response = requests.get(main_url, headers=headers, proxies=proxies).content
+    soup = BeautifulSoup(response, "html.parser")
+
+    buttons = soup.find_all(
+        "button",
+        {"data-qa": lambda x: x and "#ems-sdk-top-paginator-root" in x},
+    )
+
+    max_page = 1
+
+    for button in buttons:
+        span = button.find("span", {"class": "psw-fill-x"})
+
+        if span and span.text.strip().isdigit():
+            max_page = max(max_page, int(span.text.strip()))
+
+    return max_page
+
+
+def get_category_urls(main_url: str) -> list:
+    total_pages = get_total_pages(main_url)
+    category_urls = [
+        main_url + str(page) for page in range(1, total_pages + 1)
+    ]
+
+    return category_urls
 
 
 def get_page_urls(category_url: str) -> list:
-    """Функция для извлечения ссылок на страницы.
-
-    Args:
-        category_url (str): URL категории.
-
-    Returns:
-        list: Список ссылок на страницы.
-    """
-
     response = requests.get(
         category_url, headers=headers, proxies=proxies
     ).content
@@ -41,15 +60,6 @@ def get_page_urls(category_url: str) -> list:
 
 
 def get_page_data(page_url: str) -> dict | None:
-    """Функция для извлечения данных с каждой страницы.
-
-    Args:
-        page_url (str): URL страницы.
-
-    Returns:
-        dict: Словарь с данными.
-    """
-
     response = requests.get(page_url, headers=headers, proxies=proxies).content
     soup = BeautifulSoup(response, "html.parser")
 
